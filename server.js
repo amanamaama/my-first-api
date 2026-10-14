@@ -29,3 +29,8 @@ app.delete("/skills/:id", function (request, response) {
 app.listen(3000, function () {
   console.log("Server is running at http://localhost:3000");
 });
+app.put("/skills/:id", function (request, response) {
+  db.prepare("UPDATE skills SET name = ? WHERE id = ?").run(request.body.name, request.params.id);
+  let rows = db.prepare("SELECT * FROM skills").all();
+  response.json(rows);
+});

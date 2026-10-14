@@ -26,6 +26,27 @@
             });
         };
 
+                let editButton = document.createElement("button");
+        editButton.textContent = "Edit";
+        editButton.onclick = function () {
+          let newName = prompt("New name:", skills[i].name);
+          if (newName === null || newName === "") {
+            return;
+          }
+          fetch("http://localhost:3000/skills/" + skills[i].id, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: newName })
+          })
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (updated) {
+              showSkills(updated);
+            });
+        };
+
+        li.appendChild(editButton);
         li.appendChild(deleteButton);
         document.getElementById("list").appendChild(li);
       }
