@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Skills from my server</h1>
+  <ul id="list"></ul>
+
+  <input type="text" id="skillInput" placeholder="New skill">
+  <button id="addButton">Add Skill</button>
+
+  <script>
+    function showSkills(skills) {
+      document.getElementById("list").innerHTML = "";
+      for (let i = 0; i < skills.length; i++) {
+        let li = document.createElement("li");
+        li.textContent = skills[i];
+        document.getElementById("list").appendChild(li);
+      }
+    }
+
+    fetch("http://localhost:3000/skills")
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (skills) {
+        showSkills(skills);
+      });
+
+    document.getElementById("addButton").onclick = function () {
+      let name = document.getElementById("skillInput").value;
+
+      fetch("http://localhost:3000/skills", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name })
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (skills) {
+          showSkills(skills);
+          document.getElementById("skillInput").value = "";
+        });
+    };
+  </script>
+</body>
+</html>
