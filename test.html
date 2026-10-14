@@ -12,7 +12,21 @@
       document.getElementById("list").innerHTML = "";
       for (let i = 0; i < skills.length; i++) {
         let li = document.createElement("li");
-        li.textContent = skills[i];
+        li.textContent = skills[i].name + " ";
+
+        let deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.onclick = function () {
+          fetch("http://localhost:3000/skills/" + skills[i].id, { method: "DELETE" })
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (updated) {
+              showSkills(updated);
+            });
+        };
+
+        li.appendChild(deleteButton);
         document.getElementById("list").appendChild(li);
       }
     }

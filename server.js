@@ -11,17 +11,19 @@ db.exec("CREATE TABLE IF NOT EXISTS skills (id INTEGER PRIMARY KEY AUTOINCREMENT
 
 app.get("/skills", function (request, response) {
   let rows = db.prepare("SELECT * FROM skills").all();
-  response.json(rows.map(function (row) {
-    return row.name;
-  }));
+  response.json(rows);
 });
 
 app.post("/skills", function (request, response) {
   db.prepare("INSERT INTO skills (name) VALUES (?)").run(request.body.name);
   let rows = db.prepare("SELECT * FROM skills").all();
-  response.json(rows.map(function (row) {
-    return row.name;
-  }));
+  response.json(rows);
+});
+
+app.delete("/skills/:id", function (request, response) {
+  db.prepare("DELETE FROM skills WHERE id = ?").run(request.params.id);
+  let rows = db.prepare("SELECT * FROM skills").all();
+  response.json(rows);
 });
 
 app.listen(3000, function () {
