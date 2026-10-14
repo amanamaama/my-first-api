@@ -1,34 +1,27 @@
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs");
+const Database = require("better-sqlite3");
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-function loadSkills() {
-  if (!fs.existsSync("skills.json")) {
-    return ["HTML", "CSS", "JavaScript", "Git"];
-  }
-  let text = fs.readFileSync("skills.json", "utf8");
-  return JSON.parse(text);
-}
-
-function saveSkills(skills) {
-  fs.writeFileSync("skills.json", JSON.stringify(skills));
-}
-
-let skills = loadSkills();
+const db = new Database("skills.db");
+db.exec("CREATE TABLE IF NOT EXISTS skills (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)");
 
 app.get("/skills", function (request, response) {
-  response.json(skills);
+  let rows = db.prepare("SELECT * FROM skills").all();
+  response.json(rows.map(function (row) {
+    return row.name;
+  }));
 });
 
 app.post("/skills", function (request, response) {
-  let newSkill = request.body.name;
-  skills.push(newSkill);
-  saveSkills(skills);
-  response.json(skills);
+  db.prepare("INSERT INTO skills (name) VALUES (?)").run(request.body.name);
+  let rows = db.prepare("SELECT * FROM skills").all();
+  response.json(rows.map(function (row) {
+    return row.name;
+  }));
 });
 
 app.listen(3000, function () {
