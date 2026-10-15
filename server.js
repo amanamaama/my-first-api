@@ -26,8 +26,10 @@ app.delete("/skills/:id", function (request, response) {
   response.json(rows);
 });
 
-app.listen(3000, function () {
-  console.log("Server is running at http://localhost:3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, function () {
+  console.log("Server is running on port " + PORT);
 });
 app.put("/skills/:id", function (request, response) {
   db.prepare("UPDATE skills SET name = ? WHERE id = ?").run(request.body.name, request.params.id);
